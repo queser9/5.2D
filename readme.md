@@ -1,26 +1,60 @@
-# Calculator Microservice
+# SIT323/737-2024-T1 Prac 7P
 
-This project is a simple calculator microservice that provides basic arithmetic operations through a REST API. It is built using Node.js and Express.js.
+This repository contains the deliverables for the SIT323/737-2024-T1 Practical 7P task.
 
-## Steps
+## Contents
 
-1. Set up the project:
-   - Initialize a new Node.js project
-   - Install the required dependencies (Express.js)
+- `Dockerfile`: Dockerfile for building the Node.js application image
+- `deployment.yaml`: Kubernetes deployment configuration file
+- `service.yaml`: Kubernetes service configuration file
+- `package.json`: Node.js application dependencies and scripts
+- `index.js`: Node.js application entry point
 
-2. Create the calculator microservice:
-   - Define the API endpoints for addition, subtraction, multiplication, and division
-   - Implement the logic for each arithmetic operation
+## Instructions
 
-3. Test the microservice:
-   - Use a tool like cURL or Postman to send HTTP POST requests to the API endpoints
-   - Verify the correctness of the responses
+### Prerequisites
 
-4. Document the project:
-   - Create a README.md file with project overview, installation instructions, and API documentation
+- Docker
+- Kubernetes (Minikube or a Kubernetes cluster)
+- kubectl
 
-5. Push the code to GitHub:
-   - Initialize a new Git repository
-   - Commit the code changes
-   - Push the repository to GitHub
+### Steps to Deploy the Application
 
+1. **Build and Push Docker Image**
+
+   ```bash
+   docker build -t queser10/my-app .
+   docker push queser10/my-app
+   minikube start
+   ```
+
+2. **Deploy to Kubernetes**
+
+   Apply the deployment and service configuration files:
+
+   ```bash
+   kubectl apply -f deployment.yaml
+   kubectl apply -f service.yaml
+   ```
+
+3. **Get Minikube IP**
+
+   ```bash
+   minikube ip
+   ```
+
+4. **Access the Application**
+
+   Combine the Minikube IP and NodePort to access the application in your browser:
+
+   ```
+   http://<Minikube-IP>:32222
+   ```
+- Ensure your Minikube or Kubernetes cluster is running and accessible.
+
+- Check Pod logs for troubleshooting:
+
+  ```bash
+  kubectl logs <pod-name>
+  ```
+```
