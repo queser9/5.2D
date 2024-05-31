@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+</head>
+<body>
+    <h1>Calculator</h1>
+    <form id="calc-form">
+        <label for="operation">Operation:</label>
+        <select id="operation">
+            <option value="add">Add</option>
+            <option value="subtract">Subtract</option>
+            <option value="multiply">Multiply</option>
+            <option value="divide">Divide</option>
+            <option value="power">Power</option>
+            <option value="sqrt">Square Root</option>
+            <option value="modulo">Modulo</option>
+        </select><br><br>
+
+        <label for="num1">Number 1:</label>
+        <input type="number" id="num1"><br><br>
+
+        <label for="num2">Number 2:</label>
+        <input type="number" id="num2"><br><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+    <h2>Result: <span id="result"></span></h2>
+
+    <script>
+        document.getElementById('calc-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const operation = document.getElementById('operation').value;
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
+
+            let endpoint = `/api/${operation}`;
+            let body = {};
+
+            if (operation === 'sqrt') {
+                body.num = num1;
+            } else if (operation === 'power') {
+                body.base = num1;
+                body.exponent = num2;
+            } else {
+                body.num1 = num1;
+                body.num2 = num2;
+            }
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerText = result.result || result.error;
+        });
+    </script>
+</body>
+</html>

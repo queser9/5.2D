@@ -1,8 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 app.use(bodyParser.json());
+
+// 提供静态文件
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Addition endpoint
 app.post('/api/add', (req, res) => {

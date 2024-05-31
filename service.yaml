@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: my-app-service
 spec:
-  type: NodePort
-  ports:
-  - port: 8080
-    targetPort: 3000
-    nodePort: 32222
   selector:
     app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+      nodePort: 30000 
+  type: NodePort
+
+
