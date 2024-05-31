@@ -1,12 +1,36 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { MongoClient } = require('mongodb');
 
 const app = express();
 app.use(bodyParser.json());
 
 // 提供静态文件
 app.use(express.static(path.join(__dirname, 'public')));
+
+const uri = process.env.MONGO_URI;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function connectToMongo() {
+  try {
+    await client.connect();
+    console.log("Connected successfully to MongoDB");
+    return client.db('calculator');
+  } catch (e) {
+    console.error("Failed to connect to MongoDB", e);
+    throw e;
+  }
+}
+
+app.use(async (req, res, next) => {
+  try {
+    req.db = await connectToMongo();
+    next();
+  } catch (e) {
+    next(e);
+  }
+});
 
 // Addition endpoint
 app.post('/api/add', (req, res) => {
@@ -108,6 +132,28 @@ app.post('/api/modulo', (req, res) => {
 
   const result = dividend % divisor;
   res.json({ result });
+});
+
+// CRUD endpoints for MongoDB
+app.post('/api/operation', async (req, res) => {
+  try {
+    const { operation, operands, result } = req.body;
+    const collection = req.db.collection('operations');
+    const insertResult = await collection.insertOne({ operation, operands, result, timestamp: new Date() });
+    res.json(insertResult);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to save operation to MongoDB', details: e });
+  }
+});
+
+app.get('/api/operations', async (req, res) => {
+  try {
+    const collection = req.db.collection('operations');
+    const operations = await collection.find({}).toArray();
+    res.json(operations);
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch operations from MongoDB', details: e });
+  }
 });
 
 // Error handling middleware

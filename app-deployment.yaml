@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: your-app
+  template:
+    metadata:
+      labels:
+        app: your-app
+    spec:
+      containers:
+      - name: your-app
+        image: queser10/calculator-app:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-password
+        - name: MONGO_URI
+          value: "mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb:27017"
+        ports:
+        - containerPort: 3000
