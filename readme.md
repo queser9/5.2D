@@ -1,24 +1,41 @@
-# 6.2c instructions
-### Instructions
+# SIT323/SIT737 - Cloud Native Application Development
 
-#### Step 1: Verify the Application is Running
+## Assignment 5.2D: Dockerization - Publishing the microservice into the cloud
 
-1. Open your terminal and navigate to the directory containing your Kubernetes configuration files.
-2. Run the following command to verify that the pods and services are running:
+### Overview
 
+This assignment involves publishing a microservice to a private container registry hosted in the cloud. The steps include creating a Dockerfile, building and running a Docker container, and pushing the image to Google Cloud Artifact Registry.
+
+### Prerequisites
+
+- Git
+- Visual Studio Code
+- Node.js
+- Docker
+- Google Cloud account with Artifact Registry API enabled
+
+### Steps
+
+1. **Clone the repository:**
 ```bash
-kubectl get pods
-kubectl get services
+   git clone https://github.com/username/sit323-737-2024-t1-prac5d.git
+   cd sit323-737-2024-t1-prac5d
 ```
-You should see output indicating that your pods and services are running.
-### Step 2: Use kubectl port-forward
-Choose a local port that you will use to forward traffic to the Kubernetes service. For example, you can use port 8080.
-Run the following command to forward traffic from the local port to the Kubernetes service:
+### Run Docker Compose
 ```bash
-kubectl port-forward service/your-service-name 8080:80
+docker-compose up -d
 ```
-Replace your-service-name with the name of your Kubernetes service. The above command forwards local port 3000 to port 80 on the Kubernetes service.
-### Step 3: Access the Application
-Open your web browser.
-Navigate to http://localhost:3000 (or the port you chose in the previous step).
-You should see your application running in the web browser.
+### Push Docker image to Google Cloud Artifact Registry
+```bash
+gcloud auth login
+gcloud config set project my-project-2-425118
+gcloud auth configure-docker
+docker build -t us-west2-docker.pkg.dev/my-project-2-425118/my-microservice:tag .
+docker push us-west2-docker.pkg.dev/my-project-2-425118/my-microservice:tag
+```
+### Run the image from the registry
+```bash
+docker run -d -p 3000:3000 us-west2-docker.pkg.dev/my-project-2-425118/my-microservice:tag
+```
+### Verify the application:
+Open your browser and visit http://localhost:3000
