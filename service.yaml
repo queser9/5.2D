@@ -4,12 +4,11 @@ metadata:
   name: my-app-service
 spec:
   selector:
-    app: my-app
+    app: your-app
   ports:
     - protocol: TCP
       port: 80
       targetPort: 3000
-      nodePort: 30000 
   type: NodePort
 
 

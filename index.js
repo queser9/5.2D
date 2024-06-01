@@ -6,7 +6,6 @@ const { MongoClient } = require('mongodb');
 const app = express();
 app.use(bodyParser.json());
 
-// 提供静态文件
 app.use(express.static(path.join(__dirname, 'public')));
 
 const uri = process.env.MONGO_URI;
@@ -30,6 +29,10 @@ app.use(async (req, res, next) => {
   } catch (e) {
     next(e);
   }
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Addition endpoint
